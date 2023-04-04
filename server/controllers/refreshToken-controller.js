@@ -1,7 +1,9 @@
-import User from "../models/user-model.js";
-
+// utils
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+
+//models
+import User from "../models/user-model.js";
 
 dotenv.config();
 const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET;

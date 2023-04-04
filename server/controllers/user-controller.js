@@ -1,12 +1,11 @@
+//utils
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import makeValidation from "@withvoid/make-validation";
 
 //model
 import UserModel from "../models/user-model.js";
 import ProfileModel, { PROFILE_TYPES } from "../models/profile-model.js";
-// utils
-import makeValidation from "@withvoid/make-validation";
 
 dotenv.config();
 

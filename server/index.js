@@ -31,25 +31,6 @@ app.use(cookieParser());
 app.use(express.json({ limit: "30mb", extended: true }));
 app.use(express.urlencoded({ limit: "30mb", extended: true }));
 
-// io.on("connection", (socket) => {
-//   console.log(socket);
-//   console.log(`User connected ${socket.id}`);
-
-//   socket.on("join_room", (data) => {
-//     socket.join(data);
-//     console.log(`User with id: ${socket.id} join room: ${data}`);
-//   });
-
-//   socket.on("send_message", (data) => {
-//     console.log(data);
-//     socket.to(data.room).emit("receive_message", data);
-//   });
-//   socket.on("disconnect", () => {
-//     console.log("User disconnected", socket.id);
-//   });
-// });
-//app.use(verifyJWT); //everything after this line will use the middleware
-
 app.get("/", (req, res) => {
   res.send("Sever is ready");
 });
