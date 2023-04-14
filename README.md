@@ -2,7 +2,7 @@
 
 ## Test server is hosted at:https://chatzilla.onrender.com
 
-## Test Ui is hosted at:https://peppy-bienenstitch-3665bf.netlify.app/
+## Test Ui is hosted at:https://adorable-longma-015e39.netlify.app/
 
 - [Key Features](#key-features)
 - [Technologies used](#technologies-used)

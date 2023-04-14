@@ -15,10 +15,12 @@ import { Bottom, Footer, Header, NavList, Top } from "./nav.styles";
 import { useChatContext } from "../../providers/chat/ChatProvider";
 import { signOutAction } from "../../redux/auth/auth-actions";
 import { useAlertContext } from "../../providers/alert/AlertProvider";
+import { useNavigate } from "react-router-dom";
 
 const Nav = ({ authData, signOutAction }) => {
   const { socket } = useChatContext();
   const [openAlertBar] = useAlertContext();
+  const navigate = useNavigate();
 
   const handleSignout = () => {
     socket.current.emit("offline");
@@ -27,6 +29,7 @@ const Nav = ({ authData, signOutAction }) => {
       type: "success",
       msg: "Logout Successfully...",
     });
+    navigate("/login", { replace: true });
   };
   const navItemMeta = [
     {
