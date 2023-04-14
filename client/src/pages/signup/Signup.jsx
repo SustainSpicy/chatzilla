@@ -1,15 +1,30 @@
-import React, { useState } from "react";
-import styled from "styled-components";
+//utils
+import React from "react";
+import { Link } from "react-router-dom";
+
+//providers
 import { useAuthContext } from "../../providers/auth/AuthProvider";
+
+//components
 import { Dots } from "./Carousel";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+
+//hooks
 import useRefreshToken from "../../hooks/useRefreshToken";
-import { Button, Card, Container, Wrapper } from "./signup.styles";
+
+//styles
+import { ButtonDefault, Card, Container, Wrapper } from "./signup.styles";
+
 const Signup = () => {
   const { render, step, setStep, prevStep, nextStep, isNext } =
     useAuthContext();
 
-  const refresh = useRefreshToken();
+  const toogleDivStyle = {
+    marginTop: "1rem",
+    display: "flex",
+    gap: "15px",
+    justifyContent: "center",
+  };
+  // const refresh = useRefreshToken();
   return (
     <Wrapper>
       <Container>
@@ -19,21 +34,13 @@ const Signup = () => {
           </div>
           <div className="cardBody">{render[step]}</div>
           <div className="cardFooter">
-            <div
-              className="toggle-button"
-              style={{
-                marginTop: "1rem",
-                display: "flex",
-                gap: "15px",
-                justifyContent: "center",
-              }}
-            >
+            <div className="toggle-button" style={toogleDivStyle}>
               {step !== Object.keys(render).length - 1 && (
                 <>
-                  <Button onClick={prevStep}>Prev</Button>
-                  <Button onClick={nextStep} disabled={isNext}>
-                    Next
-                  </Button>
+                  <ButtonDefault onClick={prevStep}>Prev</ButtonDefault>
+                  <ButtonDefault onClick={nextStep} disabled={isNext}>
+                    {`Next (${step})`}
+                  </ButtonDefault>
                 </>
               )}
             </div>

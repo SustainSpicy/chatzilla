@@ -13,19 +13,19 @@ export default {
       const validation = makeValidation((types) => ({
         payload: req.body,
         checks: {
-          userIds: {
+          members: {
             type: types.array,
             options: { unique: true, empty: false, stringOnly: true },
           },
-          type: { type: types.enum, options: { enum: CHAT_ROOM_TYPES } },
+          // type: { type: types.enum, options: { enum: CHAT_ROOM_TYPES } },
         },
       }));
 
       if (!validation.success) return res.status(400).json({ ...validation });
-      // console.log(req.body);
-      const { userIds, type } = req.body;
+
+      const { members, type } = req.body;
       const { userId: chatInitiator } = req;
-      const allUserIds = [...userIds, chatInitiator];
+      const allUserIds = [...members, chatInitiator];
       const chatRoom = await ChatRoomModel.initiateChat(
         allUserIds,
         type,
@@ -59,7 +59,7 @@ export default {
         currentLoggedUser
       );
 
-      global.io.emit("new_message", { message: post });
+      // global.io.emit("new_message", { message: post });
 
       // console.log("post", post);
       return res.status(200).json({ success: true, post });
@@ -68,8 +68,22 @@ export default {
       return res.status(500).json({ success: false, error: error });
     }
   },
+  getAllActiveChatsByUser: async (req, res) => {
+    console.log("get all users by chat rooms");
+    try {
+      const { userId } = req.params;
+      const rooms = await ChatRoomModel.getUserCurrentRooms(userId);
+      return res.status(200).json({
+        success: true,
+        rooms,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ success: false, error });
+    }
+  },
   getRecentConversation: async (req, res) => {},
-  getConversationByRoomId: async (req, res) => {
+  getAllConversationByRoomId: async (req, res) => {
     console.log("get convo");
     try {
       const { roomId } = req.params;
@@ -100,6 +114,7 @@ export default {
     }
   },
   markConversationReadByRoomId: async (req, res) => {
+    console.log("read");
     try {
       const { roomId } = req.params;
       const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
@@ -115,7 +130,22 @@ export default {
         roomId,
         currentLoggedUser
       );
+
       return res.status(200).json({ success: true, data: result });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json({ success: false, error });
+    }
+  },
+  getRoomById: async (req, res) => {
+    console.log("get room by id");
+    try {
+      const { roomId } = req.params;
+      const room = await ChatRoomModel.getChatRoomByRoomId(roomId);
+      return res.status(200).json({
+        success: true,
+        room,
+      });
     } catch (error) {
       console.log(error);
       return res.status(500).json({ success: false, error });

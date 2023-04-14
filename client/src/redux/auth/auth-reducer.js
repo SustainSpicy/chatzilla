@@ -2,8 +2,16 @@ import * as actionTypes from "./auth-types";
 
 const authReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case actionTypes.SIGNUP:
+    case actionTypes.SIGNIN:
+      localStorage.setItem("profile", JSON.stringify({ ...action?.payload }));
       return { ...state, authData: action?.payload };
+
+    case actionTypes.SIGNOUT:
+      localStorage.clear();
+      return {
+        ...state,
+        authData: null,
+      };
 
     default:
       return state;

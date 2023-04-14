@@ -8,7 +8,9 @@ const router = express.Router();
 
 router
   .get("/", chatRoom.getRecentConversation)
-  .get("/:roomId", chatRoom.getConversationByRoomId)
+  .get("/:userId", chatRoom.getAllActiveChatsByUser)
+  .get("/:roomId/room", chatRoom.getRoomById)
+  .get("/:roomId/messages", chatRoom.getAllConversationByRoomId)
   .post("/initiate", chatRoom.initiate)
   .post("/:roomId/message", chatRoom.postMessage)
   .put("/:roomId/mark-read", chatRoom.markConversationReadByRoomId);

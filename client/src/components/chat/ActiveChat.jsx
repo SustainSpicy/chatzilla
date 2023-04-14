@@ -1,55 +1,35 @@
 //utils
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import avatar from "../../images/ava.jpg";
 
 //components
 import { BiCheckDouble } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
+import moment from "moment";
+import { useChatContext } from "../../providers/chat/ChatProvider";
 
-const AlertBadge = ({ count }) => {
-  if (count < 1) return <BiCheckDouble style={{ color: "#0d9472" }} />;
-  return <AlertWrapper>{count}</AlertWrapper>;
+const AlertBadge = ({ status }) => {
+  if (!status) return <BiCheckDouble style={{ color: "#9c9c9c" }} />;
+  return <BiCheckDouble style={{ color: "#0d9472" }} />;
 };
-const AlertWrapper = styled.span`
-  background-color: #ce3d3d;
-  width: 12px;
-  height: 12px;
 
-  border-radius: 50%;
-  padding: 3px;
-  color: #fff;
-  font-size: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-const ActiveChat = ({
-  isAuth,
-  title,
-  msg,
-  time,
-  status,
-  style,
-  collapsable,
-}) => {
-  const [typing, setTyping] = useState(false);
+const ActiveChat = ({ data, style, authData, typing }) => {
+  const { checkReadStatus } = useChatContext();
+  const { postedByUser, createdAt, message } = data;
 
   return (
-    <Wrapper {...style} isAuth={isAuth}>
-      <div className="avatar">
-        <img src={avatar} />
-      </div>
+    <Wrapper {...style} isAuth={postedByUser?._id === authData.id}>
+      <div className="avatar">{/* <img src={avatar} /> */}</div>
       <div className="profileInfo">
         <div className="profileInfo_header">
-          <h2>{title}</h2>
-          <span>{time}</span>
+          <h2>{postedByUser?.username}</h2>
+          <span>{moment(createdAt).fromNow()}</span>
         </div>
         <div className="profileInfo_body">
-          <span className="message">{msg}</span>
+          <span className="message">{message?.messageText}</span>
 
-          {typing && <span className="typing">typing...</span>}
-          <span>{<AlertBadge count={status} />}</span>
+          <span>{<AlertBadge status={checkReadStatus(data)} />}</span>
         </div>
       </div>
       <BsThreeDotsVertical />
@@ -79,7 +59,7 @@ const Wrapper = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #000;
+    background-color: #0f6181;
     overflow: hidden;
 
     & > img {
@@ -117,8 +97,7 @@ const Wrapper = styled.div`
         word-break: break-word;
         width: fit-content;
         font-size: 12px;
-        background-color: ${({ isAuth }) => (isAuth ? "white" : "blue")};
-
+        background-color: ${({ isAuth }) => (isAuth ? "white" : "  #108e97")};
         border-radius: 0 10px 10px 10px;
         color: ${({ theme }) => theme.icon_gray};
         padding: 1rem;

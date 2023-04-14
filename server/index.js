@@ -53,6 +53,7 @@ global.io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
+
 global.io.on("connection", WebSockets.connection);
 
 mongoose

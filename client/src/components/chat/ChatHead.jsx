@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import avatar from "../../images/ava.jpg";
 import { BiCheckDouble } from "react-icons/bi";
+import { useEffect } from "react";
 
 const AlertBadge = ({ count }) => {
   if (count < 1) return <BiCheckDouble style={{ color: "#0d9472" }} />;
@@ -20,25 +21,57 @@ const AlertWrapper = styled.span`
   justify-content: center;
   align-items: center;
 `;
-const ChatHead = ({ onClick, title, msg, time, status, style, typing }) => {
-  // const [typing, setTyping] = useState(true);
+const ChatHead = ({ onClick, data, style, isOnline, authUser, active }) => {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    if (active === true) {
+      const currentChatHead = data.members.find(
+        (member) => member._id !== authUser.id
+      );
+
+      setUserData(currentChatHead);
+      return;
+    }
+    setUserData(data);
+
+    return () => {};
+  }, [data]);
+
+  if (active === true) {
+    return (
+      <Wrapper {...style} onClick={onClick}>
+        <div className="avatar">
+          {/* <img src={avatar} /> */}
+          {isOnline && <span className="greenDot"></span>}
+        </div>
+        <div className="profileInfo">
+          <div className="profileInfo_header">
+            <h2>{userData?.username}</h2>
+            <span>{userData?.time}</span>
+          </div>
+          <div className="profileInfo_body">
+            {userData?.typing ? (
+              <span className="typing">typing...</span>
+            ) : (
+              <span className="alert">{userData?.msg}</span>
+            )}
+            <span>{<AlertBadge count={userData?.status} />}</span>
+          </div>
+        </div>
+      </Wrapper>
+    );
+  }
   return (
     <Wrapper {...style} onClick={onClick}>
       <div className="avatar">
-        <img src={avatar} />
+        {/* <img src={avatar} /> */}
+        {isOnline && <span className="greenDot"></span>}
       </div>
       <div className="profileInfo">
         <div className="profileInfo_header">
-          <h2>{title}</h2>
-          <span>{time}</span>
-        </div>
-        <div className="profileInfo_body">
-          {typing ? (
-            <span className="typing">typing...</span>
-          ) : (
-            <span className="alert">{msg}</span>
-          )}
-          <span>{<AlertBadge count={status} />}</span>
+          <h2>{userData?.username}</h2>
+          <span>{userData?.time}</span>
         </div>
       </div>
     </Wrapper>
@@ -52,14 +85,13 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px;
-
   margin: 20px 0;
   padding: 0.3rem 0;
   cursor: pointer;
   border-radius: 10px;
   &:hover {
     & .avatar {
-      outline: 3px solid #0d718579;
+      outline: 2px solid #0d718579;
     }
   }
   & .avatar {
@@ -67,9 +99,19 @@ const Wrapper = styled.div`
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background-color: #000;
-    overflow: hidden;
-
+    background-color: #0f6181;
+    /* overflow: hidden; */
+    position: relative;
+    & .greenDot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid white;
+      background: green;
+      position: absolute;
+      bottom: 2px;
+      right: -2px;
+    }
     & > img {
       object-fit: cover;
       width: 100%;
@@ -80,7 +122,7 @@ const Wrapper = styled.div`
   & .profileInfo {
     flex: 1;
 
-    display: none;
+    /* display: none; */
     gap: 5px;
     & .profileInfo_header {
       display: flex;
@@ -130,6 +172,7 @@ const Wrapper = styled.div`
     @media only screen and (min-width: 600px) and (max-width: 959px) {
       /* display: flex;
       flex-direction: column; */
+      gap: 0px;
     }
     //Laptops and Desktops
     @media only screen and (min-width: 960px) and (max-width: 1279px) {
@@ -151,9 +194,11 @@ const Wrapper = styled.div`
   //Laptops and Desktops
   @media only screen and (min-width: 960px) and (max-width: 1279px) {
     justify-content: flex-start;
+    gap: 10px;
   }
   //Large Desktops and TVs
   @media only screen and (min-width: 1280px) {
     justify-content: flex-start;
+    gap: 10px;
   }
 `;

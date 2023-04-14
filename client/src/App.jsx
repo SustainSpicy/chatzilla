@@ -25,8 +25,6 @@ const App = () => {
           {/* protected routes */}
           <Route element={<RequireAuth />}>
             <Route exact path="/*" element={<Home />}></Route>
-            {/* catch all routes */}
-            <Route exact path="*" element={<h1>Wrong address</h1>} />
           </Route>
         </Routes>
       </Router>
@@ -38,14 +36,9 @@ const mapStateToProps = ({ auth }) => {
   console.log(auth);
   return {
     authData: auth?.authData,
-    // profile: auth?.profile,
   };
 };
-const mapDispatchToProps = (dispatch) => {
-  return {
-    // signupAction: (data) => dispatch(signupAction(data)),
-  };
-};
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+
+export default connect(mapStateToProps)(App);
 
 const Wrapper = styled.section``;

@@ -7,15 +7,15 @@ export const API_PRIVATE = axios.create({
   withCredentials: true,
 });
 
-// API.interceptors.request.use((req) => {
-//   if (true) {
-//     req.headers.authorization = `Bearer ${
-//       JSON.parse(localStorage.getItem("toekn")).token
-//     }`;
-//   }
+API.interceptors.request.use((req) => {
+  if (localStorage.getItem("profile")) {
+    req.headers.authorization = `Bearer ${
+      JSON.parse(localStorage.getItem("profile")).authorization
+    }`;
+  }
 
-//   return req;
-// });
+  return req;
+});
 
 export default API;
 
@@ -35,11 +35,20 @@ export const refreshAPI = () =>
 
 //users
 export const getAllUsersAPI = () => API.get("/user");
+
 export const getUserByIdAPI = (formData) => API.get("/users/" + formData);
 
 //chat
+export const getAllActiveChatsAPI = (userId) => API.get(`/room/${userId}`);
+export const getRoomByIdAPI = (roomId) => API.get(`/room/${roomId}/room`);
+
 export const initializeChat = (chatData) =>
   API.post("/room/initiate", chatData);
-export const getConversationByRoomId = (roomId) => API.get("/room/" + roomId);
+
+export const getAllConversationByRoomId = (roomId) =>
+  API.get(`/room/${roomId}/messages`);
+
 export const postMessage = (roomId, message) =>
   API.post("/room/" + roomId + "/message", message);
+
+export const markRead = (roomId) => API.put("/room/" + roomId + "/mark-read");

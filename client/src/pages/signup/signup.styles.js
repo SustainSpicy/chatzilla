@@ -29,7 +29,6 @@ export const Container = styled.div`
 `;
 
 export const Card = styled.div`
-  /* background-color: #fff; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -38,7 +37,6 @@ export const Card = styled.div`
   max-width: 700px;
   width: 400px;
   position: fixed;
-  /* gap: 10px; */
   margin: 0 auto;
   border-radius: 0.5rem;
   /* -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
@@ -69,7 +67,7 @@ export const Card = styled.div`
   }
 `;
 
-export const Button = styled(Btn)`
+export const ButtonDefault = styled(Btn)`
   background-color: #469de5;
 
   &:hover {
@@ -78,7 +76,6 @@ export const Button = styled(Btn)`
 `;
 export const ButtonSuccess = styled(Btn)`
   background-color: #32b9ae;
-
   width: 80%;
 
   &:hover {

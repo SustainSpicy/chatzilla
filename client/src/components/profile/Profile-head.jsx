@@ -1,21 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import avatar from "../../images/ava.jpg";
-const ProfileHead = ({ title, msg, time, status, style, collapsable }) => {
+import Modal from "../common/modal/Modal";
+
+const ProfileHead = ({ username, style }) => {
+  const [open, setOpen] = useState(false);
   return (
-    <Wrapper {...style}>
-      <div className="avatar">
-        <img src={avatar} />
-      </div>
-      <div className="profileInfo">
-        <div className="profileInfo_header">
-          <h2>{title}</h2>
+    <>
+      <Wrapper {...style} onClick={() => setOpen(!open)}>
+        <div className="avatar">
+          <img src={avatar} />
         </div>
-        <div className="profileInfo_body">
-          <span>{msg}</span>
+        <div className="profileInfo">
+          <div className="profileInfo_header">
+            <h2>{username}</h2>
+          </div>
+          <div className="profileInfo_body">{/* <span>{msg}</span> */}</div>
         </div>
-      </div>
-    </Wrapper>
+      </Wrapper>
+      <Modal open={open} closeModal={() => setOpen(false)}>
+        <h3>Profile</h3>
+        <br />
+        <span>Username: {username}</span>
+      </Modal>
+    </>
   );
 };
 
@@ -27,12 +35,13 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px;
-
+  position: relative;
+  cursor: pointer;
   & .avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background-color: #000;
+    background-color: #0f6181;
     overflow: hidden;
 
     & > img {

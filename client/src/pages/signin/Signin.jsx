@@ -13,14 +13,8 @@ import { useAuthContext } from "../../providers/auth/AuthProvider";
 import { signInAction } from "../../redux/auth/auth-actions";
 
 const Signin = ({}) => {
-  const {
-    error,
-    formData,
-    requesting,
-
-    handleSigninSubmit,
-    handleInputChange,
-  } = useAuthContext();
+  const { error, formData, requesting, handleSigninSubmit, handleInputChange } =
+    useAuthContext();
   const [username] = useState(formData?.username);
   const [password] = useState(formData?.password);
   const navigate = useNavigate();

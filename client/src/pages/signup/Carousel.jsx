@@ -1,5 +1,7 @@
-//style
+//utils
+import { useState, useEffect } from "react";
 import styled from "styled-components";
+import { useLocation, useNavigate } from "react-router-dom";
 
 //components
 import { Spinner } from "../../components/common/common";
@@ -7,12 +9,7 @@ import DefaultInput from "../../components/inputs/DefaultInput";
 import { useAuthContext } from "../../providers/auth/AuthProvider";
 import { ButtonSuccess, Wrapper } from "./signup.styles";
 import { EmailIcon, PasswordIcon } from "../../components/svgIcons";
-
-//router
-import { useLocation, useNavigate } from "react-router-dom";
 import BreakSlider from "../../components/slider/BreakSlider";
-import { useState } from "react";
-import { useEffect } from "react";
 
 export const AuthDetails = () => {
   const { formData, error, handleInputChange } = useAuthContext();
@@ -64,17 +61,12 @@ export const AuthDetails = () => {
   );
 };
 export const ProfileDetails = () => {
-  const { formData, setFormData, setIsNext, error, handleInputChange } =
-    useAuthContext();
+  const { formData, setIsNext, error, handleInputChange } = useAuthContext();
   const [bio, setBio] = useState(formData?.bio || "");
+
   useEffect(() => {
     setIsNext(false);
-    // setFormData((prevState) => {
-    //   return {
-    //     ...prevState,
-    //     bio: "",
-    //   };
-    // });
+
     return () => {};
   }, []);
 
@@ -83,25 +75,22 @@ export const ProfileDetails = () => {
     handleInputChange(e);
   };
   return (
-    <>
-      <DefaultInput
-        inputProps={{
-          name: "bio",
-          id: "bio",
-          value: bio,
-          placeholder: "Enter Bio",
-          onChange: handleBioChange,
-          icon: <EmailIcon />,
-        }}
-        error={error}
-      />
-    </>
+    <DefaultInput
+      inputProps={{
+        name: "bio",
+        id: "bio",
+        value: bio,
+        placeholder: "Enter Bio",
+        onChange: handleBioChange,
+        icon: <EmailIcon />,
+      }}
+      error={error}
+    />
   );
 };
 
 export const Settings = () => {
-  const { formData, setFormData, setIsNext, handleInputChange } =
-    useAuthContext();
+  const { setFormData, setIsNext } = useAuthContext();
   const [isChecked, setIsChecked] = useState(true);
 
   useEffect(() => {
@@ -123,7 +112,6 @@ export const Settings = () => {
         [e.target.name]: e.target.checked ? "public" : "private",
       };
     });
-    // handleInputChange(e);
   };
   return (
     <>

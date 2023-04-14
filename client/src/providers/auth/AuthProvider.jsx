@@ -12,8 +12,9 @@ import {
 
 //hooks
 import { createContext, useContext, useEffect, useState } from "react";
-import { signInAction } from "../../redux/auth/auth-actions";
+import { signInAction, signOutAction } from "../../redux/auth/auth-actions";
 import { useAlertContext } from "../alert/AlertProvider";
+import { useChatContext } from "../chat/ChatProvider";
 
 const AuthContext = createContext();
 
@@ -173,7 +174,7 @@ const AuthContextProvider = ({ children, signInAction }) => {
           signInAction(data);
           openAlertBar({
             type: "success",
-            msg: "Login Sucessful...",
+            msg: "Login Successful...",
           });
           navigate(from, { replace: true });
         }
@@ -193,6 +194,7 @@ const AuthContextProvider = ({ children, signInAction }) => {
       });
     }
   };
+
   const render = {
     0: <AuthDetails />,
     1: <ProfileDetails />,
@@ -227,6 +229,7 @@ const AuthContextProvider = ({ children, signInAction }) => {
         setError,
         setStep,
         loading,
+
         checkIfNext,
         step,
         render,
