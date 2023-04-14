@@ -39,7 +39,7 @@ const Signup = () => {
                 <>
                   <ButtonDefault onClick={prevStep}>Prev</ButtonDefault>
                   <ButtonDefault onClick={nextStep} disabled={isNext}>
-                    {`Next (${step})`}
+                    {`Next `}
                   </ButtonDefault>
                 </>
               )}

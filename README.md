@@ -1,8 +1,8 @@
 # Chatzilla by OYELEKE ISREAL TIMILEHIN
 
-## Test server is hosted at:
+## Test server is hosted at:https://chatzilla.onrender.com
 
-## Test Ui is hosted at:
+## Test Ui is hosted at:https://peppy-bienenstitch-3665bf.netlify.app/
 
 - [Key Features](#key-features)
 - [Technologies used](#technologies-used)
