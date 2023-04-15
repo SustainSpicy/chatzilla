@@ -102,7 +102,7 @@ chatMessageSchema.statics.createPostInChatRoom = async function (
       //   },
       // },
     ]);
-    // console.log(post);
+    console.log("new message created", post.message);
     return post.populate("postedByUser");
   } catch (error) {
     console.log(error);

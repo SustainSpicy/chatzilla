@@ -49,7 +49,7 @@ const server = http.createServer(app);
 /** Create socket connection */
 global.io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.UI_BASE_URL,
     methods: ["GET", "POST"],
   },
 });

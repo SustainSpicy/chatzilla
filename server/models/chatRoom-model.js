@@ -50,7 +50,9 @@ chatRoomSchema.statics.initiateChat = async function (
 };
 chatRoomSchema.statics.getChatRoomByRoomId = async function (roomId) {
   try {
-    const room = await this.findOne({ _id: roomId });
+    const room = await this.findOne({ _id: roomId })
+      .populate("members")
+      .populate("chatInitiator");
     return room;
   } catch (error) {
     throw error;

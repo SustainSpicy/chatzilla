@@ -7,7 +7,7 @@ const ACCESS_SECRET = process.env.ACCESS_TOKEN_SECRET;
 const REFRESH_SECRET = process.env.REFRESH_TOKEN_SECRET;
 
 export const encode = async (req, res, next) => {
-  console.log("encode");
+  // console.log("encode");
   try {
     const { username } = req.body;
 
@@ -37,7 +37,7 @@ export const encode = async (req, res, next) => {
   }
 };
 export const decode = (req, res, next) => {
-  console.log("decode");
+  // console.log("decode");
   if (!req.headers["authorization"]) {
     return res
       .status(400)
