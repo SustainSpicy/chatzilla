@@ -3,43 +3,22 @@ import styled from "styled-components";
 import React from "react";
 import { connect } from "react-redux";
 
-//icons
-import { CiSearch } from "react-icons/ci";
-
 //components
 import ChatScreen from "../../../components/chat/ChatScreen";
-import { BottomRow, Head, TopRow } from "../../../components/common/common";
+import { BottomRow } from "../../../components/common/common";
 import ChatList from "../../../components/chat/ChatList";
 
 //providers
 import { useChatContext } from "../../../providers/chat/ChatProvider";
 
-const MessagesTab = ({ authData }) => {
-  const { currentChatRoom } = useChatContext();
-
+const MessagesTab = ({}) => {
   return (
     <Container>
       <Left>
-        <Top>
-          <Head>
-            <h2>Chats</h2>
-
-            {/* <span className="icons"></span> */}
-          </Head>
-        </Top>
-
         <ChatList />
       </Left>
       <Right>
-        <Top>
-          <Head>
-            <h2>{currentChatRoom?.username}</h2>
-            <span className="icons">
-              <CiSearch />
-            </span>
-          </Head>
-        </Top>
-        <ChatScreen authData={authData} />
+        <ChatScreen />
       </Right>
     </Container>
   );
@@ -88,9 +67,7 @@ export const Right = styled(Wrapper)`
   height: 100%;
   overflow: hidden;
 `;
-export const Top = styled(TopRow)`
-  background-color: ${({ theme }) => theme.plain_white};
-`;
+
 export const Bottom = styled(BottomRow)`
   padding: 1rem;
   overflow-y: scroll;

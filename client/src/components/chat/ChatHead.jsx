@@ -3,6 +3,7 @@ import styled from "styled-components";
 import avatar from "../../images/ava.jpg";
 import { BiCheckDouble } from "react-icons/bi";
 import { useEffect } from "react";
+import { connect } from "react-redux";
 
 const AlertBadge = ({ count }) => {
   if (count < 1) return <BiCheckDouble style={{ color: "#0d9472" }} />;
@@ -21,64 +22,86 @@ const AlertWrapper = styled.span`
   justify-content: center;
   align-items: center;
 `;
-const ChatHead = ({ onClick, data, style, isOnline, authUser, active }) => {
-  const [userData, setUserData] = useState(null);
+const ChatHead = ({ authData, onClick, data, style, isOnline, tab }) => {
+  const [chatItem, setChatItem] = useState(null);
+  const { members } = data;
+  const currentUser = authData;
 
   useEffect(() => {
-    if (active === true) {
-      const currentChatHead = data.members.find(
-        (member) => member._id !== authUser.id
+    if (tab === 0) {
+      const currentChatHead = members.find(
+        (member) => member._id !== currentUser._id
       );
 
-      setUserData(currentChatHead);
+      setChatItem(currentChatHead);
       return;
     }
-    setUserData(data);
+    setChatItem(data);
 
     return () => {};
   }, [data]);
 
-  if (active === true) {
+  // if (tab === 0) {
+  //   return (
+  //     <Wrapper {...style} onClick={onClick}>
+  //       <div className="avatar">
+  //         <span className={isOnline ? "greenDot" : "redDot"}></span>
+  //       </div>
+  //       <div className="profileInfo">
+  //         <div className="profileInfo_header">
+  //           <h2>{username}</h2>
+  //           <span>{time}</span>
+  //         </div>
+  //         {/* <div className="profileInfo_body">
+  //           {typing ? (
+  //             <span className="typing">typing...</span>
+  //           ) : (
+  //             <span className="alert">{msg}</span>
+  //           )}
+  //           <span>{<AlertBadge count={status} />}</span>
+  //         </div> */}
+  //       </div>
+  //     </Wrapper>
+  //   );
+  // }
+  if (chatItem) {
+    const { username, time, typing, msg, status } = chatItem;
+
     return (
       <Wrapper {...style} onClick={onClick}>
         <div className="avatar">
-          {/* <img src={avatar} /> */}
-          {isOnline && <span className="greenDot"></span>}
+          {tab === 0 && (
+            <span className={isOnline ? "greenDot" : "redDot"}></span>
+          )}
         </div>
         <div className="profileInfo">
           <div className="profileInfo_header">
-            <h2>{userData?.username}</h2>
-            <span>{userData?.time}</span>
+            <h2>{username}</h2>
+            <span>{time}</span>
           </div>
-          <div className="profileInfo_body">
-            {userData?.typing ? (
-              <span className="typing">typing...</span>
-            ) : (
-              <span className="alert">{userData?.msg}</span>
-            )}
-            <span>{<AlertBadge count={userData?.status} />}</span>
-          </div>
+          {tab === 0 && (
+            <div className="profileInfo_body">
+              {typing ? (
+                <span className="typing">typing...</span>
+              ) : (
+                <span className="alert">{msg}</span>
+              )}
+              <span>
+                <AlertBadge count={status} />
+              </span>
+            </div>
+          )}
         </div>
       </Wrapper>
     );
   }
-  return (
-    <Wrapper {...style} onClick={onClick}>
-      <div className="avatar">
-        {/* <img src={avatar} /> */}
-        {isOnline && <span className="greenDot"></span>}
-      </div>
-      <div className="profileInfo">
-        <div className="profileInfo_header">
-          <h2>{userData?.username}</h2>
-          <span>{userData?.time}</span>
-        </div>
-      </div>
-    </Wrapper>
-  );
 };
-
-export default ChatHead;
+const mapStateToProps = ({ auth }) => {
+  return {
+    authData: auth?.authData,
+  };
+};
+export default connect(mapStateToProps)(ChatHead);
 
 const Wrapper = styled.div`
   display: flex;
@@ -108,6 +131,16 @@ const Wrapper = styled.div`
       border-radius: 50%;
       border: 1px solid white;
       background: green;
+      position: absolute;
+      bottom: 2px;
+      right: -2px;
+    }
+    & .redDot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 1px solid white;
+      background: #800000;
       position: absolute;
       bottom: 2px;
       right: -2px;

@@ -9,6 +9,7 @@ import ActiveChat from "./ActiveChat";
 import { SendIcon } from "../svgIcons";
 import { useChatContext } from "../../providers/chat/ChatProvider";
 import moment from "moment";
+import { CiSearch } from "react-icons/ci";
 
 const ChatScreen = ({ authData }) => {
   const scroll = useRef();
@@ -23,6 +24,8 @@ const ChatScreen = ({ authData }) => {
     requesting,
     handleMessageSend,
   } = useChatContext();
+
+  const { username } = currentChatRoom;
 
   // scroll to bottom
   useEffect(() => {
@@ -59,29 +62,41 @@ const ChatScreen = ({ authData }) => {
       </Head>
     );
   };
+  const ChatPanel = ({ list, ref, currentRoomData }) => {
+    if (list.length) {
+      list.map((chat, index) => {
+        return (
+          <div
+            ref={ref}
+            key={index}
+            onClick={(e) => readMessages(e, currentRoomData)}
+          >
+            <ActiveChat
+              data={{ ...chat, ...currentRoomData }}
+              authData={authData}
+              typing={typing}
+            />
+          </div>
+        );
+      });
+      return;
+    }
+    return "No chats to show";
+  };
   if (chatRoom) {
+    const { conversation } = chatRoom;
     return (
-      <ChatScreenDiv>
-        <div style={{ overflow: "auto" }}>
-          {chatRoom && (
+      <>
+        <ChatScreenDiv>
+          <div style={{ overflow: "auto" }}>
             <>
               <ChatDiv>
                 <RoomHeader roomData={currentChatRoom} />
-                {chatRoom?.conversation?.map((chat, index) => {
-                  return (
-                    <div
-                      ref={scroll}
-                      key={index}
-                      onClick={(e) => readMessages(e, currentChatRoom)}
-                    >
-                      <ActiveChat
-                        data={{ ...chat, ...currentChatRoom }}
-                        authData={authData}
-                        typing={typing}
-                      />
-                    </div>
-                  );
-                })}
+                <ChatPanel
+                  list={[]}
+                  ref={scroll}
+                  currentRoomData={currentChatRoom}
+                />
                 <div
                   style={{
                     marginTop: "10px",
@@ -92,26 +107,34 @@ const ChatScreen = ({ authData }) => {
                 </div>
               </ChatDiv>
             </>
-          )}
-        </div>
-        {/* <Centered> */}
-        <SendMessage>
-          <input
-            type="text"
-            name="chat"
-            onChange={(e) => setChatText(e.target.value)}
-            value={chatText}
-            onKeyUp={handleTyping}
-            placeholder="Type Here..."
-          />
-          <SendIcon onClick={handleMessageSend} />
-        </SendMessage>
-        {/* </Centered> */}
-      </ChatScreenDiv>
+          </div>
+          {/* <Centered> */}
+          <SendMessage>
+            <input
+              type="text"
+              name="chat"
+              onChange={(e) => setChatText(e.target.value)}
+              value={chatText}
+              onKeyUp={handleTyping}
+              placeholder="Type Here..."
+            />
+            <SendIcon onClick={handleMessageSend} />
+          </SendMessage>
+          {/* </Centered> */}
+        </ChatScreenDiv>
+      </>
     );
   }
   return (
     <>
+      <Top>
+        <Head>
+          <h2>{username}</h2>
+          <span className="icons">
+            <CiSearch />
+          </span>
+        </Head>
+      </Top>
       <ChatScreenDiv>
         <Centered>
           <div className="placeholderDiv">Start a Chart</div>
@@ -178,4 +201,7 @@ const ChatScreenDiv = styled(BottomRow)`
     opacity: 0.2;
     font-family: cursive;
   }
+`;
+export const Top = styled(TopRow)`
+  background-color: ${({ theme }) => theme.plain_white};
 `;

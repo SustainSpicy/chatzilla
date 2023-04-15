@@ -8,6 +8,7 @@ import { BottomRow, Centered } from "../common/common";
 import ChatHead from "./ChatHead";
 import { BsFillChatLeftTextFill } from "react-icons/bs";
 import SpinnerDot from "../common/spinner/SpinnerDot";
+import { Head, TopRow } from "../../components/common/common";
 
 //providers
 import { useChatContext } from "../../providers/chat/ChatProvider";
@@ -15,68 +16,78 @@ import { useState } from "react";
 
 const ChatList = ({ authData }) => {
   const {
-    activeChatList,
     checkOnlineStatus,
     handleMessageInitialize,
-    allChatList,
+    onlineUsers,
     getAllUsers,
     getActiveUsers,
+    utils,
   } = useChatContext();
-  const [activeScreen, setActiveScreen] = useState(true);
+  const [tab, setTab] = useState(0);
+  const [activeChats, setActiveChats] = useState(null);
+  const [allUsers, setAllUsers] = useState(null);
+  const [requesting, setRequesting] = useState(true);
 
   useEffect(() => {
-    if (activeScreen) {
-      getActiveUsers();
+    async function fetchData() {
+      let activeChat = await utils.getActiveUsers(authData.id);
+      let allUsers = await utils.getAllUsers();
+
+      if (activeChat.success) setActiveChats(activeChat.rooms);
+      if (allUsers.success) setAllUsers(allUsers.users);
     }
-    getAllUsers();
+    if (authData) {
+      setRequesting(true);
+      fetchData();
+      setRequesting(false);
+    }
+  }, [authData, tab]);
 
-    return () => {};
-  }, [activeScreen]);
-
+  const TabPanel = ({ tab }) => {
+    if (tab === 0) {
+      return <ChatPanel list={activeChats} tab={tab} />;
+    }
+    if (tab === 1) {
+      return <ChatPanel list={allUsers} tab={tab} />;
+    }
+  };
+  const ChatPanel = ({ list, tab }) => {
+    if (list && list.length) {
+      return list.map((item) => {
+        return (
+          <ChatHead
+            key={item._id}
+            data={{ ...item, status: 2 }}
+            isOnline={utils.checkOnlineStatus(item, onlineUsers, authData)}
+            onClick={(e) => handleMessageInitialize(e, item)}
+            tab={tab}
+          />
+        );
+      });
+    }
+    if (!list || requesting) {
+      return (
+        <Centered>
+          <SpinnerDot />
+        </Centered>
+      );
+    }
+    return "No chats to show";
+  };
   return (
     <>
+      <Top>
+        <Head>
+          <h2>Chats</h2>
+        </Head>
+      </Top>
       <Bottom>
         <Header>
-          <span onClick={() => setActiveScreen(true)}>All Messages</span>|
-          <span onClick={() => setActiveScreen(false)}>All Users</span>
+          <span onClick={() => setTab(0)}>Active Chats</span>|
+          <span onClick={() => setTab(1)}>All Users</span>
         </Header>
-        {activeScreen ? (
-          activeChatList.length ? (
-            activeChatList.map((item) => {
-              return (
-                <ChatHead
-                  key={item._id}
-                  data={item}
-                  authUser={authData}
-                  isOnline={checkOnlineStatus(item, authData)}
-                  onClick={(e) => handleMessageInitialize(e, item)}
-                  active={true}
-                />
-              );
-            })
-          ) : (
-            <Centered>
-              <SpinnerDot />
-            </Centered>
-          )
-        ) : allChatList.length ? (
-          allChatList.map((item) => {
-            return (
-              <ChatHead
-                key={item._id}
-                data={item}
-                authUser={authData}
-                isOnline={checkOnlineStatus(item, authData)}
-                onClick={(e) => handleMessageInitialize(e, item)}
-                active={false}
-              />
-            );
-          })
-        ) : (
-          <Centered>
-            <SpinnerDot />
-          </Centered>
-        )}
+
+        <TabPanel tab={tab} />
       </Bottom>
     </>
   );
@@ -107,3 +118,6 @@ const Header = styled.div`
   }
 `;
 const Body = styled.div``;
+export const Top = styled(TopRow)`
+  background-color: ${({ theme }) => theme.plain_white};
+`;
