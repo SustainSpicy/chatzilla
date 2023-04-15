@@ -13,6 +13,7 @@ import App from "./App";
 //providers
 import AuthContextProvider from "./providers/auth/AuthProvider";
 import AlertContextProvider from "./providers/alert/AlertProvider";
+import ChatContextProvider from "./providers/chat/ChatProvider";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
@@ -22,9 +23,11 @@ root.render(
     <AlertContextProvider>
       <ThemeProvider theme={theme}>
         <AuthContextProvider>
-          {/* <FontStyles /> */}
-          <GlobalStyles />
-          <App />
+          <ChatContextProvider>
+            {/* <FontStyles /> */}
+            <GlobalStyles />
+            <App />
+          </ChatContextProvider>
         </AuthContextProvider>
       </ThemeProvider>
     </AlertContextProvider>

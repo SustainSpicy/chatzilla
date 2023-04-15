@@ -8,6 +8,7 @@ export const socketActions = {
   get_active_users: "get-online-users",
   new_message: "new_message",
   message_read: "message_read",
+  subscribe_to_chat: "subscribe-to-chat",
 };
 
 export default {
@@ -56,9 +57,11 @@ export default {
   },
   generateChatScreenObject: (room, loggedUser) => {
     const { _id, chatInitiator, members, createdAt } = room;
+
     let selectedUser = room.members.find(
-      (member) => member._id !== loggedUser._id
+      (member) => member._id !== loggedUser.id
     );
+
     let chatRoomMeta = {
       id: _id,
       name: selectedUser.username,
@@ -67,25 +70,29 @@ export default {
       otherMembers: selectedUser,
       createdAt: createdAt,
     };
-    console.log(chatRoomMeta, "room");
+
     return chatRoomMeta;
   },
+  getOtherMembersFromArray: (obj, currentUser) => {
+    return obj.find((member) => member._id !== currentUser.id);
+  },
   populateChatScreen: async (chatRoomMeta, socket) => {
+    const { id } = chatRoomMeta;
+    const { subscribe_to_chat } = socketActions;
+
     try {
-      socket.emit("subscribe-to-chat", chatRoomMeta.roomId);
-      const { data } = await api.getAllConversationByRoomId(
-        chatRoomMeta.roomId
-      );
-      console.log(data);
+      socket.emit(subscribe_to_chat, id);
+      const { data } = await api.getAllConversationByRoomId(id);
+      //   console.log(data);
 
       return data;
     } catch (error) {
       console.error(error);
     }
   },
-  markMessagesRead: async (chatRoomMeta) => {
+  markMessagesRead: async (id) => {
     try {
-      const { data } = await api.markRead(chatRoomMeta.roomId);
+      const { data } = await api.markRead(id);
 
       return data;
     } catch (error) {
@@ -118,15 +125,18 @@ export default {
       console.error(error);
     }
   },
-  readMessages: (e, room, socket) => {
-    e.preventDefault();
-    socket.emit(socketActions.message_read, room);
+  readMessages: (room, socket) => {
+    const { message_read } = socketActions;
+    socket.emit(message_read, room);
   },
-  handleTyping: (e, socket, currentUser, currentChatroom) => {
-    e.preventDefault();
-    socket.emit("typing", {
-      username: currentUser.username,
-      room: currentChatroom.chatRoomId,
+  handleTyping: (socket, currentUser, currentChatroom) => {
+    const { username } = currentUser;
+    const { chatRoomId } = currentChatroom;
+    const { user_typing } = socketActions;
+
+    socket.emit(user_typing, {
+      username: username,
+      room: chatRoomId,
     });
   },
   checkReadStatus: (data) => {

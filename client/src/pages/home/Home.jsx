@@ -17,9 +17,6 @@ import {
   Wrapper,
 } from "./home.styles";
 
-//providers
-import ChatContextProvider from "../../providers/chat/ChatProvider";
-
 const Home = () => {
   return (
     <Wrapper>
@@ -32,14 +29,7 @@ const Home = () => {
             <Routes>
               <Route element={<SliderOutlet />}>
                 <Route path="" element={<DashboardTab />} />
-                <Route
-                  path="message"
-                  element={
-                    <ChatContextProvider>
-                      <MessagesTab />
-                    </ChatContextProvider>
-                  }
-                />
+                <Route path="message" element={<MessagesTab />} />
                 <Route path="contact" element={<h1>contact</h1>} />
 
                 {/* catch all routes */}

@@ -1,69 +1,29 @@
-import React, { useState } from "react";
+//utils
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import avatar from "../../images/ava.jpg";
-import { BiCheckDouble } from "react-icons/bi";
-import { useEffect } from "react";
 import { connect } from "react-redux";
 
-const AlertBadge = ({ count }) => {
-  if (count < 1) return <BiCheckDouble style={{ color: "#0d9472" }} />;
-  return <AlertWrapper>{count}</AlertWrapper>;
-};
-const AlertWrapper = styled.span`
-  background-color: #ce3d3d;
-  width: 12px;
-  height: 12px;
+//components
+import { BiCheckDouble } from "react-icons/bi";
 
-  border-radius: 50%;
-  padding: 3px;
-  color: #fff;
-  font-size: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
 const ChatHead = ({ authData, onClick, data, style, isOnline, tab }) => {
   const [chatItem, setChatItem] = useState(null);
   const { members } = data;
-  const currentUser = authData;
 
   useEffect(() => {
     if (tab === 0) {
-      const currentChatHead = members.find(
-        (member) => member._id !== currentUser._id
+      const selectedUser = members.find(
+        (member) => member?._id !== authData?.id
       );
 
-      setChatItem(currentChatHead);
+      setChatItem(selectedUser);
       return;
     }
     setChatItem(data);
 
     return () => {};
-  }, [data]);
+  }, [authData, data]);
 
-  // if (tab === 0) {
-  //   return (
-  //     <Wrapper {...style} onClick={onClick}>
-  //       <div className="avatar">
-  //         <span className={isOnline ? "greenDot" : "redDot"}></span>
-  //       </div>
-  //       <div className="profileInfo">
-  //         <div className="profileInfo_header">
-  //           <h2>{username}</h2>
-  //           <span>{time}</span>
-  //         </div>
-  //         {/* <div className="profileInfo_body">
-  //           {typing ? (
-  //             <span className="typing">typing...</span>
-  //           ) : (
-  //             <span className="alert">{msg}</span>
-  //           )}
-  //           <span>{<AlertBadge count={status} />}</span>
-  //         </div> */}
-  //       </div>
-  //     </Wrapper>
-  //   );
-  // }
   if (chatItem) {
     const { username, time, typing, msg, status } = chatItem;
 
@@ -102,7 +62,23 @@ const mapStateToProps = ({ auth }) => {
   };
 };
 export default connect(mapStateToProps)(ChatHead);
+const AlertBadge = ({ count }) => {
+  if (count < 1) return <BiCheckDouble style={{ color: "#0d9472" }} />;
+  return <AlertWrapper>{count}</AlertWrapper>;
+};
+const AlertWrapper = styled.span`
+  /* background-color: #ce3d3d; */
+  width: 12px;
+  height: 12px;
 
+  border-radius: 50%;
+  padding: 3px;
+  color: #fff;
+  font-size: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 const Wrapper = styled.div`
   display: flex;
   align-items: center;

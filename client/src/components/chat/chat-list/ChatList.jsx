@@ -1,28 +1,18 @@
 //utils
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
 //components
-import { BottomRow, Centered } from "../common/common";
-import ChatHead from "./ChatHead";
-import { BsFillChatLeftTextFill } from "react-icons/bs";
-import SpinnerDot from "../common/spinner/SpinnerDot";
-import { Head, TopRow } from "../../components/common/common";
+import { BottomRow } from "../../common/common";
+import { Head, TopRow } from "../../../components/common/common";
+import ChatListPanel from "./ChatListPanel";
 
 //providers
-import { useChatContext } from "../../providers/chat/ChatProvider";
-import { useState } from "react";
+import { useChatContext } from "../../../providers/chat/ChatProvider";
 
 const ChatList = ({ authData }) => {
-  const {
-    checkOnlineStatus,
-    handleMessageInitialize,
-    onlineUsers,
-    getAllUsers,
-    getActiveUsers,
-    utils,
-  } = useChatContext();
+  const { utils } = useChatContext();
   const [tab, setTab] = useState(0);
   const [activeChats, setActiveChats] = useState(null);
   const [allUsers, setAllUsers] = useState(null);
@@ -34,7 +24,8 @@ const ChatList = ({ authData }) => {
       let allUsers = await utils.getAllUsers();
 
       if (activeChat.success) setActiveChats(activeChat.rooms);
-      if (allUsers.success) setAllUsers(allUsers.users);
+      if (allUsers.success)
+        setAllUsers(allUsers.users.filter((user) => user._id !== authData.id));
     }
     if (authData) {
       setRequesting(true);
@@ -45,35 +36,27 @@ const ChatList = ({ authData }) => {
 
   const TabPanel = ({ tab }) => {
     if (tab === 0) {
-      return <ChatPanel list={activeChats} tab={tab} />;
-    }
-    if (tab === 1) {
-      return <ChatPanel list={allUsers} tab={tab} />;
-    }
-  };
-  const ChatPanel = ({ list, tab }) => {
-    if (list && list.length) {
-      return list.map((item) => {
-        return (
-          <ChatHead
-            key={item._id}
-            data={{ ...item, status: 2 }}
-            isOnline={utils.checkOnlineStatus(item, onlineUsers, authData)}
-            onClick={(e) => handleMessageInitialize(e, item)}
-            tab={tab}
-          />
-        );
-      });
-    }
-    if (!list || requesting) {
       return (
-        <Centered>
-          <SpinnerDot />
-        </Centered>
+        <ChatListPanel
+          list={activeChats}
+          tab={tab}
+          authData={authData}
+          requesting={requesting}
+        />
       );
     }
-    return "No chats to show";
+    if (tab === 1) {
+      return (
+        <ChatListPanel
+          list={allUsers}
+          tab={tab}
+          authData={authData}
+          requesting={requesting}
+        />
+      );
+    }
   };
+
   return (
     <>
       <Top>
@@ -117,7 +100,7 @@ const Header = styled.div`
     cursor: pointer;
   }
 `;
-const Body = styled.div``;
-export const Top = styled(TopRow)`
+
+const Top = styled(TopRow)`
   background-color: ${({ theme }) => theme.plain_white};
 `;

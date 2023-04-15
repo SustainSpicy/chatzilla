@@ -1,35 +1,43 @@
 //utils
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import avatar from "../../images/ava.jpg";
 
 //components
 import { BiCheckDouble } from "react-icons/bi";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import moment from "moment";
-import { useChatContext } from "../../providers/chat/ChatProvider";
+import { useChatContext } from "../../../providers/chat/ChatProvider";
 
 const AlertBadge = ({ status }) => {
   if (!status) return <BiCheckDouble style={{ color: "#9c9c9c" }} />;
   return <BiCheckDouble style={{ color: "#0d9472" }} />;
 };
 
-const ActiveChat = ({ data, style, authData, typing }) => {
-  const { checkReadStatus } = useChatContext();
+const ActiveChat = ({ data, style, authData }) => {
+  const { utils } = useChatContext();
   const { postedByUser, createdAt, message } = data;
+  const { messageText } = message;
+  const { username, _id } = postedByUser;
+
+  useEffect(() => {
+    // console.log("createdAt");
+    // console.log(data);
+    // console.log(moment(createdAt).fromNow());
+    return () => {};
+  }, []);
 
   return (
-    <Wrapper {...style} isAuth={postedByUser?._id === authData.id}>
-      <div className="avatar">{/* <img src={avatar} /> */}</div>
+    <Wrapper {...style} isAuth={_id === authData.id}>
+      <div className="avatar"></div>
       <div className="profileInfo">
         <div className="profileInfo_header">
-          <h2>{postedByUser?.username}</h2>
+          <h2>{username}</h2>
           <span>{moment(createdAt).fromNow()}</span>
         </div>
         <div className="profileInfo_body">
-          <span className="message">{message?.messageText}</span>
+          <span className="message">{messageText}</span>
 
-          <span>{<AlertBadge status={checkReadStatus(data)} />}</span>
+          <span>{<AlertBadge status={utils.checkReadStatus(data)} />}</span>
         </div>
       </div>
       <BsThreeDotsVertical />

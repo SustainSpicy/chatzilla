@@ -4,12 +4,9 @@ import React from "react";
 import { connect } from "react-redux";
 
 //components
-import ChatScreen from "../../../components/chat/ChatScreen";
+import ChatScreen from "../../../components/chat/chat-screen/ChatScreen";
 import { BottomRow } from "../../../components/common/common";
-import ChatList from "../../../components/chat/ChatList";
-
-//providers
-import { useChatContext } from "../../../providers/chat/ChatProvider";
+import ChatList from "../../../components/chat/chat-list/ChatList";
 
 const MessagesTab = ({}) => {
   return (

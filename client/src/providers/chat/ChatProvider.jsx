@@ -13,28 +13,13 @@ const ChatContextProvider = ({ children, authData }) => {
   const socket = useRef();
 
   const [onlineUsers, setOnlineUsers] = useState([]);
-  const [currentChatRoom, setCurrentChatRoom] = useState({});
-  const [activeUsers, setActiveUsers] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
+  const [currentChatRoom, setCurrentChatRoom] = useState(null);
   const [chatRoom, setChatRoom] = useState(null);
   const [typing, setTyping] = useState(null);
   const [requesting, setRequesting] = useState(false);
   const [chatText, setChatText] = useState("");
   const { user_typing, get_active_users, new_message, message_read } =
     socketActions;
-
-  useEffect(() => {
-    async function fetchData() {
-      let activeChat = await utils.getActiveUsers(authData.id);
-      let allUsers = await utils.getAllUsers();
-
-      if (activeChat.success) setActiveUsers(activeChat.rooms);
-      if (allUsers.success) setAllUsers(allUsers.users);
-    }
-    // if (authData) {
-    //   fetchData();
-    // }
-  }, [authData]);
 
   useEffect(() => {
     if (authData) {
@@ -57,7 +42,8 @@ const ChatContextProvider = ({ children, authData }) => {
         }, 5000);
       });
       //add new message in to message list
-      socket.current.on(new_message, (data) => {
+      socket.current.on("new_message", (data) => {
+        // console.log(data);
         setChatRoom((prevState) => ({
           ...prevState,
           conversation: [...prevState.conversation, data],
@@ -65,7 +51,6 @@ const ChatContextProvider = ({ children, authData }) => {
       });
       //update message list
       socket.current.on(message_read, (room) => {
-        console.log("message_read");
         updateChat(room);
       });
     }
@@ -73,12 +58,13 @@ const ChatContextProvider = ({ children, authData }) => {
 
   async function updateChat(room) {
     console.log("updateChat");
-    const convo = await utils.getAllConversationInChatroom(room.roomId);
-    console.log(convo);
-    if (convo.success) {
+    const convo = await utils.getAllConversationInChatroom(room.id);
+    // console.log(convo);
+    const { success, conversation } = convo;
+    if (success) {
       setChatRoom((prevState) => ({
         ...prevState,
-        conversation: convo.data.conversation,
+        conversation: conversation,
       }));
     }
   }
@@ -106,30 +92,34 @@ const ChatContextProvider = ({ children, authData }) => {
     };
   }, [authData]);
 
-  async function populateChatScreen(room, loggedUser) {
-    let chatRoomMeta = utils.generateChatScreenObject(room, loggedUser);
+  async function populateChatScreen(room, currentUser) {
+    let chatRoomMeta = utils.generateChatScreenObject(room, currentUser);
+
     setCurrentChatRoom(chatRoomMeta);
     setRequesting(true);
     let convo = await utils.populateChatScreen(chatRoomMeta, socket.current);
-    if (convo.success) {
+    const { success, conversation, users } = convo;
+
+    const { id } = chatRoomMeta;
+    if (success) {
       setChatRoom({
-        chatRoomId: chatRoomMeta.roomId,
-        conversation: convo.data.conversation,
-        users: chatRoomMeta.members,
+        chatRoomId: id,
+        conversation,
+        users,
       });
 
       setRequesting(false);
-      await utils.markMessagesRead(chatRoomMeta);
+      await utils.markMessagesRead(id);
       return;
     }
     setRequesting(false);
   }
-  const handleMessageInitialize = async (e, room) => {
-    e.preventDefault();
+  const MessageInitialize = async (room, currentUser) => {
     console.log("init chat");
+
     const { members } = room;
     if (members) {
-      populateChatScreen(room, authData);
+      populateChatScreen(room, currentUser);
     } else {
       setRequesting(true);
 
@@ -140,28 +130,33 @@ const ChatContextProvider = ({ children, authData }) => {
       if (success) {
         let fetchedRoom = await utils.getRoomById(chatRoomId);
         let { room } = fetchedRoom;
-        populateChatScreen(room, authData);
+
+        populateChatScreen(room, currentUser);
       }
     }
   };
 
-  const handleMessageSend = async (e) => {
-    e.preventDefault();
+  const SendChatMessage = async (chatRoom, currentChatRoom, currentUser) => {
     setTyping(null);
     if (chatText !== "") {
+      const { chatRoomId } = chatRoom;
+      const { chatInitiator } = currentChatRoom;
+      const { username } = currentUser;
+
       let messageData = {
-        chatRoomId: chatRoom.chatRoomId,
+        chatRoomId,
         created: Date.now(),
         message: { messageText: chatText },
-        postedByUser: { _id: authData.id },
-        readByRecipients: [currentChatRoom.otherMembers],
+        postedByUser: { _id: authData.id, username },
+        readByRecipients: [{ readByUserId: chatInitiator._id }],
         type: "Text",
       };
+      // console.log(messageData);
       socket.current.emit(new_message, messageData);
       setChatText("");
 
       await utils.postNewMessage(
-        chatRoom.chatRoomId,
+        messageData.chatRoomId,
         messageData.message.messageText
       );
     }
@@ -175,14 +170,13 @@ const ChatContextProvider = ({ children, authData }) => {
         requesting,
         typing,
         onlineUsers,
-
         chatRoom,
         chatText,
         currentChatRoom,
-
+        populateChatScreen,
         setChatText,
-        handleMessageSend,
-        handleMessageInitialize,
+        SendChatMessage,
+        MessageInitialize,
       }}
     >
       {children}

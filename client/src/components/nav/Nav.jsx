@@ -18,12 +18,12 @@ import { useAlertContext } from "../../providers/alert/AlertProvider";
 import { useNavigate } from "react-router-dom";
 
 const Nav = ({ authData, signOutAction }) => {
-  // const { socket } = useChatContext();
+  const { socket } = useChatContext();
   const [openAlertBar] = useAlertContext();
   const navigate = useNavigate();
 
   const handleSignout = () => {
-    // socket.current.emit("offline");
+    socket.current.emit("offline");
     signOutAction();
     openAlertBar({
       type: "success",
