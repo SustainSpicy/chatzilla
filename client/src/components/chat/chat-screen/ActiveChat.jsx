@@ -19,13 +19,6 @@ const ActiveChat = ({ data, style, authData }) => {
   const { messageText } = message;
   const { username, _id } = postedByUser;
 
-  useEffect(() => {
-    // console.log("createdAt");
-    // console.log(data);
-    // console.log(moment(createdAt).fromNow());
-    return () => {};
-  }, []);
-
   return (
     <Wrapper {...style} isAuth={_id === authData.id}>
       <div className="avatar"></div>
@@ -99,6 +92,8 @@ const Wrapper = styled.div`
     }
     & .profileInfo_body {
       display: flex;
+      justify-content: ${({ isAuth }) => isAuth && "flex-start"};
+      flex-direction: ${({ isAuth }) => (isAuth ? "row-reverse" : "")};
 
       gap: 10px;
       & .message {
@@ -106,7 +101,9 @@ const Wrapper = styled.div`
         width: fit-content;
         font-size: 12px;
         background-color: ${({ isAuth }) => (isAuth ? "white" : "  #108e97")};
-        border-radius: 0 10px 10px 10px;
+        border-radius: ${({ isAuth }) =>
+          isAuth ? " 10px 0 10px 10px;" : "   0 10px 10px 10px"};
+
         color: ${({ theme }) => theme.icon_gray};
         padding: 1rem;
       }
