@@ -18,8 +18,14 @@ const ChatContextProvider = ({ children, authData }) => {
   const [typing, setTyping] = useState(null);
   const [requesting, setRequesting] = useState(false);
   const [chatText, setChatText] = useState("");
-  const { user_typing, get_active_users, new_message, message_read } =
-    socketActions;
+  const {
+    offline,
+    isActive,
+    user_typing,
+    get_active_users,
+    new_message,
+    message_read,
+  } = socketActions;
 
   useEffect(() => {
     if (authData) {
@@ -42,7 +48,7 @@ const ChatContextProvider = ({ children, authData }) => {
         }, 5000);
       });
       //add new message in to message list
-      socket.current.on("new_message", (data) => {
+      socket.current.on(new_message, (data) => {
         // console.log(data);
         setChatRoom((prevState) => ({
           ...prevState,
@@ -71,14 +77,14 @@ const ChatContextProvider = ({ children, authData }) => {
 
   useEffect(() => {
     const handleFocus = () => {
-      socket.current.emit("isActive", authData.id);
-      socket.current.on("get-online-users", (users) => {
+      socket.current.emit(isActive, authData.id);
+      socket.current.on(get_active_users, (users) => {
         setOnlineUsers(users);
       });
     };
 
     const handleBlur = () => {
-      socket.current.emit("offline");
+      socket.current.emit(offline);
     };
 
     if (authData) {

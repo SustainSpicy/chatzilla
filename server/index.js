@@ -19,6 +19,7 @@ import chatRouter from "./routes/chat-routes.js";
 import { decode } from "./middlewares/jwt.js";
 import verifyJWT from "./middlewares/verifyJWT.js";
 import credentials from "./middlewares/credentials.js";
+import allowedOrigins from "./config/allowedOrigins.js";
 
 const app = express();
 
@@ -49,7 +50,7 @@ const server = http.createServer(app);
 /** Create socket connection */
 global.io = new Server(server, {
   cors: {
-    origin: process.env.UI_BASE_URL,
+    origin: allowedOrigins,
     methods: ["GET", "POST"],
   },
 });

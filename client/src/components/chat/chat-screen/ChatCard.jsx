@@ -3,7 +3,6 @@ import ActiveChat from "./ActiveChat";
 import { Centered } from "../../common/common";
 
 const ChatCard = ({ list, currentRoomData, innerRef, authData }) => {
-  console.log(list);
   if (list.length) {
     return list.map((chat, index) => {
       const { otherMembers } = currentRoomData;
