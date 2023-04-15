@@ -10,6 +10,7 @@ export const socketActions = {
   message_read: "message_read",
   subscribe_to_chat: "subscribe-to-chat",
   offline: "offline",
+  isActive: "isActive",
 };
 
 export default {
