@@ -1,5 +1,5 @@
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://joyful-pasca-120879.netlify.app",
+  "https://friendly-haupia-098320.netlify.app/login",
 ];
 export default allowedOrigins;
