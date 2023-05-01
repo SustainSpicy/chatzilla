@@ -2,7 +2,7 @@
 
 ## Test server is hosted at:https://chatzilla.onrender.com
 
-## Test Ui is hosted at:https://friendly-haupia-098320.netlify.app/message
+## Test Ui is hosted at:
 
 - [Key Features](#key-features)
 - [Technologies used](#technologies-used)
