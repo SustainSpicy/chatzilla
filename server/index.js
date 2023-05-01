@@ -4,7 +4,7 @@ import { connectToDb } from "./utils/db.js";
 import { Server } from "socket.io";
 import cors from "cors";
 import http from "http";
-import WebSockets from "./utils/Websockets.js";
+import WebSockets from "./utils/websockets.js";
 import allowedOrigins from "./config/allowedOrigin.js";
 //middleware
 import { decode } from "./middelware/jwt.js";
