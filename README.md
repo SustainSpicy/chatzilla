@@ -66,7 +66,7 @@ In the first terminal
 url of api server:
 
 ```
-REACT_APP_API= http://localhost:5000
+REACT_APP_BASE_URL= http://localhost:5000
 
 ```
 
@@ -84,7 +84,7 @@ In the second terminal
 ```
 DB_URL =
 ACCESS_TOKEN_SECRET=
-REFRESH_TOKEN_SECRET=
+UI_BASE_URL=
 
 
 ```
