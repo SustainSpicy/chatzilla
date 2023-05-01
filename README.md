@@ -2,7 +2,7 @@
 
 ## Test server is hosted at:https://chatzilla.onrender.com
 
-## Test Ui is hosted at:
+## Test Ui is hosted at:https://reliable-florentine-93f3f8.netlify.app/login
 
 - [Key Features](#key-features)
 - [Technologies used](#technologies-used)
