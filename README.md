@@ -2,7 +2,7 @@
 
 ## Test server is hosted at:https://chatzilla.onrender.com
 
-## Test Ui is hosted at:https://reliable-florentine-93f3f8.netlify.app/login
+## Test Ui is hosted at:https://golden-naiad-942e64.netlify.app/login
 
 - [Key Features](#key-features)
 - [Technologies used](#technologies-used)
@@ -66,7 +66,7 @@ In the first terminal
 url of api server:
 
 ```
-REACT_APP_BASE_URL= http://localhost:5000
+REACT_APP_BASE_URL=
 
 ```
 
